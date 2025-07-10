@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import MovieGenre from '../../components/MovieGenre';
+const { slug } = Astro.params;
+// Fetch movie details based on slug
+// const movie = await fetch(`http://localhost:8080/api/v1/movie/${slug}`, {
+//   method: 'GET',
+// }).then((response) => response.json());
+---
+<BaseLayout title={'Genre'}
+    meta={{ 
+      description: 'genre',
+    }}>
+    <MovieGenre slug={ slug || 'hanh-dong' } client:load/>
+</BaseLayout>

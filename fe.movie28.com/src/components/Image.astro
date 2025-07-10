@@ -1,0 +1,5 @@
+---
+const { src, alt, width, height, class: className = '' } = Astro.props;
+const imageSrc = "https://wsrv.nl/?url="
+---
+<img class={className} src={imageSrc + src} alt={alt} width={width} height={height} loading="lazy" decoding="async" />

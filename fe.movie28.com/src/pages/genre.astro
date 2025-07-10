@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Image from '../components/Image.astro';
+const domainApi = import.meta.env.PUBLIC_API_GO_URL;
+const apiKey = import.meta.env.PUBLIC_API_KEY
+const data = await fetch(domainApi + '/api/v1/genre',{
+	method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': apiKey
+  }
+}).then((response) => response.json());
+---
+<BaseLayout title={'Genre'}
+    meta={{ 
+      description: 'genre',
+    }}>
+    <!-- head -->
+    <section class="section section--head section--head-fixed">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 col-xl-6">
+            <h1 class="section__title section__title--head">Genres</h1>
+          </div>
+
+          <div class="col-12 col-xl-6">
+            <ul class="breadcrumb">
+              <li class="breadcrumb__item"><a href="/">Home</a></li>
+              <li class="breadcrumb__item breadcrumb__item--active">Genre</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- end head -->
+    <!-- categories -->
+    <section class="section section--pb0">
+      <div class="container">
+        <div class="row row--grid">
+          {data.data.map((genre:any) => (
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <a href={'/genre/' + genre.slug} class="category">
+                  <div class="category__cover">
+                    <Image
+                      src={genre.image + "&fit=cover&w=414&h=280&format=webp&output=webp"}
+                      alt={genre.name}/>
+                  </div>
+                  <h3 class="category__title" >{genre.name}</h3>
+                  <span class="category__value">{genre.total}</span>
+                </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+    <!-- endcategories -->
+</BaseLayout>

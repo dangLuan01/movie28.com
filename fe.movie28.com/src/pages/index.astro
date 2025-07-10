@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CatalogMovie from '../components/CatalogMovie';
+import MovieTheme from '../components/MovieTheme';
+import MovieHot from '../components/MovieHot';
+
+const domainApi = import.meta.env.PUBLIC_API_GO_URL;
+const apiKey 	= import.meta.env.PUBLIC_API_KEY
+
+const moviesHot = await fetch(domainApi + '/api/v1/movie/hot', {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': apiKey
+  }
+}).then((response) => response.json());
+
+const genres = await fetch(domainApi + '/api/v1/genre', {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': apiKey
+  }
+}).then((response) => response.json());
+
+const currentPage =  parseInt('1');
+
+const datas = await fetch(`${domainApi}/api/v1/movie/catalog?page=${currentPage}&page_size=18`, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': apiKey
+  }
+}).then((data) => data.json());
+---
+
+<BaseLayout title="28MOVIE" description="Home page">
+	<!-- home -->
+	<MovieHot moviesHot={moviesHot.data} client:load />
+	<!-- end home -->
+	<!-- catalog -->
+	<CatalogMovie genres={genres.data} initialMovies={datas.data.movies} initialGrade="featured" client:load />
+	<!-- end catalog -->
+	<!-- themes -->
+	<MovieTheme client:only="react" />
+	<!-- end themes -->
+</BaseLayout>
