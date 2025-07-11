@@ -20,7 +20,7 @@ type GetMovieQuery struct {
 	PageSize 	 int `form:"page_size" binding:"omitempty,minInt=1,maxInt=30"`
 	Genre 		 string `form:"genre" binding:"omitempty,slug"`
 	Release_date string `form:"release_date" binding:"omitempty,yearRange"`
-	Type 		 string `form:"type"`
+	Type 		 string `form:"type" binding:"oneof=single series"`
 }
 type GetMovieBySlugParam struct {
 	Slug string `uri:"slug" binding:"slug"`
@@ -95,9 +95,9 @@ func (mh *MovieHandler) FilterMovie(ctx *gin.Context)  {
 		return
 	}
 	movieFilter, paginate, err := mh.service.FilterMovie(&v1dto.Filter{
-		Genre:  &query.Genre,
-		Release_date: &query.Release_date,
-		Type: &query.Type,
+		Genre:  		&query.Genre,
+		Release_date: 	&query.Release_date,
+		Type: 			&query.Type,
 	}, query.Page, query.PageSize)
 
 	if err != nil {
