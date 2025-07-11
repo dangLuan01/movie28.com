@@ -1,0 +1,24 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "vn_normalizer": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "asciifolding"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "name": {
+        "type": "text",
+        "analyzer": "vn_normalizer"
+      },
+      "origin_name": {
+        "type": "text",
+        "analyzer": "vn_normalizer"
+      }
+    }
+  }
+}

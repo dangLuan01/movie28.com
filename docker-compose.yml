@@ -83,6 +83,36 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  es-init:
+    image: curlimages/curl
+    container_name: app_es_init
+    volumes:
+    - ./es:/data:ro
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    entrypoint: >
+      sh -c "
+        echo '🔎 Checking if index movies exists...';
+        if [ $(curl -s -o /dev/null -w '%{http_code}' http://elasticsearch:9200/movies) -eq 404 ]; then
+          echo '🚀 Creating index movies...';
+          curl -XPUT http://elasticsearch:9200/movies \
+            -H 'Content-Type: application/json' \
+            -d @/data/movies.mapping.json;
+          echo '✅ Index movies created.';
+        else
+          echo '✅ Index movies already exists.';
+        fi;
+        echo '📦 Importing data...';
+        curl -s -H 'Content-Type: application/x-ndjson' \
+            -XPOST 'http://elasticsearch:9200/_bulk?pretty&refresh=true' \
+            --data-binary @/data/movies.ndjson;
+        echo '✅ Import done.';
+      "
+    networks:
+      - app-network
+    restart: "no"
+  #Service forntend
   movie-app:
     build: 
       context: ./fe.movie28.com
